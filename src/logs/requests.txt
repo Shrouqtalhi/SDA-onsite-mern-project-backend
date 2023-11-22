@@ -66,3 +66,5 @@ Method: GET, Path: /api/authors/, Date: 11/21/2023, Time: 2:24:58 AM
 Method: DELETE, Path: /api/authors/655be64510761f2537285355, Date: 11/21/2023, Time: 2:25:14 AM
 Method: GET, Path: /api/authors/655be64510761f2537285355, Date: 11/21/2023, Time: 2:25:18 AM
 Method: GET, Path: /api/authors/, Date: 11/21/2023, Time: 2:25:23 AM
+Method: GET, Path: /books, Date: 11/22/2023, Time: 3:19:01 PM
+Method: GET, Path: /api/books, Date: 11/22/2023, Time: 3:19:11 PM
