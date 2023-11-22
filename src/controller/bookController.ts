@@ -8,7 +8,7 @@ export const getAllBooks = async (req: Request, res: Response, next: NextFunctio
     const book = await Book.find()
     res.json({
       message: 'Get All Books',
-      payload: book,
+      //   payload: book,
     })
   } catch (error) {
     next(error)

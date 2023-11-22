@@ -1,11 +1,13 @@
 import express, { Application } from 'express'
 import mongoose from 'mongoose'
+import { config } from 'dotenv'
 
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
 import bookRouter from './routers/bookRoutes'
 import { dev } from './config'
 
+config()
 const app: Application = express()
 const PORT = dev.app.PORT
 const URL = dev.db.ATLAS_URL as string
