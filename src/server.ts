@@ -1,27 +1,25 @@
-import express from 'express'
+import express, { Application } from 'express'
 import mongoose from 'mongoose'
 import { config } from 'dotenv'
 
-import usersRouter from './routers/users'
-import productsRouter from './routers/products'
-import ordersRouter from './routers/orders'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
 import authorsRouter from './routers/authorRouter'
 import borrowsRouter from './routers/borrowRouter'
+import bookRouter from './routers/bookRoutes'
+import { dev } from './config'
 
 config()
-const app = express()
-const PORT = 5050
-const URL = process.env.ATLAS_URL as string
+const app: Application = express()
+const PORT = dev.app.PORT
+const URL = dev.db.ATLAS_URL as string
 
 app.use(myLogger)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.use('/api/users', usersRouter)
-app.use('/api/orders', ordersRouter)
-app.use('/api/products', productsRouter)
+app.use('/api/authors', authorsRouter)
+app.use('/api/borrows', borrowsRouter)
 app.use('/api/authors', authorsRouter)
 app.use('/api/borrows', borrowsRouter)
 
@@ -37,5 +35,5 @@ mongoose
   })
 
 app.listen(PORT, () => {
-  console.log('Server running http://localhost:' + PORT)
+  console.log(`Server running http://localhost:${PORT}`)
 })
