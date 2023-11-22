@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 
-
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -10,7 +9,7 @@ const userSchema = new mongoose.Schema({
   // here's 1to1 just for the demo
   order: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Order',
+    ref: 'Borrow',
   },
 })
 

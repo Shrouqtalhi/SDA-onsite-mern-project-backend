@@ -4,6 +4,8 @@ import { config } from 'dotenv'
 
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
+import authorsRouter from './routers/authorRouter'
+import borrowsRouter from './routers/borrowRouter'
 import bookRouter from './routers/bookRoutes'
 import { dev } from './config'
 
@@ -16,7 +18,10 @@ app.use(myLogger)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.use('/api/books', bookRouter)
+app.use('/api/authors', authorsRouter)
+app.use('/api/borrows', borrowsRouter)
+app.use('/api/authors', authorsRouter)
+app.use('/api/borrows', borrowsRouter)
 
 app.use(apiErrorHandler)
 
