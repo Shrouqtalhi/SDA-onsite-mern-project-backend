@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
   borrow: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Borrow',
+    ref: 'Borrow',
   },
 })
 
