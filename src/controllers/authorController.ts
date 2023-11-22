@@ -4,7 +4,7 @@ import ApiError from '../errors/ApiError'
 
 export default class authorController {
   async getAllAuthors(req: Request, res: Response) {
-    const authors = await Author.find()
+    const authors = await Author.find().populate('books')
     res.status(200).json(authors)
   }
 

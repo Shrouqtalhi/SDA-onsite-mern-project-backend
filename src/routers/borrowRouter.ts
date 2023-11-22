@@ -2,12 +2,17 @@ import express from 'express'
 const router = express.Router()
 
 import Borrow from '../models/borrow'
+import ApiError from '../errors/ApiError'
 
-router.get('/', async (req, res) => {
-  const borrows = await Borrow.find()
+import borrowController from '../controllers/borrowController'
+const borrow = new borrowController()
 
-  console.log('borrows :>> ', borrows)
-  res.status(200).json(borrows)
-})
+router.get('/', borrow.getAllBorrows)
+
+router.post('/', borrow.addBorrow)
+
+router.put('/:id', borrow.updateBorrow)
+
+router.delete('/:id', borrow.deleteBorrow)
 
 export default router

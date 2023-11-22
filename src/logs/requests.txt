@@ -66,3 +66,15 @@ Method: GET, Path: /api/authors/, Date: 11/21/2023, Time: 2:24:58 AM
 Method: DELETE, Path: /api/authors/655be64510761f2537285355, Date: 11/21/2023, Time: 2:25:14 AM
 Method: GET, Path: /api/authors/655be64510761f2537285355, Date: 11/21/2023, Time: 2:25:18 AM
 Method: GET, Path: /api/authors/, Date: 11/21/2023, Time: 2:25:23 AM
+Method: GET, Path: /api/borrow, Date: 11/22/2023, Time: 3:58:48 PM
+Method: GET, Path: /api/borrow/, Date: 11/22/2023, Time: 3:58:56 PM
+Method: GET, Path: /api/borrows, Date: 11/22/2023, Time: 3:59:30 PM
+Method: GET, Path: /api/authors, Date: 11/22/2023, Time: 3:59:44 PM
+Method: GET, Path: /api/authors, Date: 11/22/2023, Time: 4:01:26 PM
+Method: GET, Path: /api/authors/, Date: 11/22/2023, Time: 4:01:32 PM
+Method: GET, Path: /api/authors/, Date: 11/22/2023, Time: 4:02:02 PM
+Method: GET, Path: /api/authors, Date: 11/22/2023, Time: 4:02:13 PM
+Method: GET, Path: /api/authors, Date: 11/22/2023, Time: 4:09:34 PM
+Method: GET, Path: /api/borrows/, Date: 11/22/2023, Time: 4:09:46 PM
+Method: GET, Path: /api/borrows/, Date: 11/22/2023, Time: 4:09:57 PM
+Method: GET, Path: /api/authors/, Date: 11/22/2023, Time: 4:17:18 PM
