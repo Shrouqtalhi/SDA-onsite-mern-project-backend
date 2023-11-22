@@ -7,13 +7,13 @@ import productsRouter from './routers/products'
 import ordersRouter from './routers/orders'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
-import authorsRouter from './routers/author'
-import borrowsRouter from './routers/borrow'
+import authorsRouter from './routers/authorRouter'
+import borrowsRouter from './routers/borrowRouter'
 
 config()
 const app = express()
 const PORT = 5050
-const URL = process.env.MONGO_URL as string
+const URL = process.env.ATLAS_URL as string
 
 app.use(myLogger)
 app.use(express.urlencoded({ extended: true }))
