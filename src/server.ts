@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import { config } from 'dotenv'
 
@@ -7,8 +7,8 @@ import productsRouter from './routers/products'
 import ordersRouter from './routers/orders'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
-import authorsRouter from './routers/author'
-import borrowsRouter from './routers/borrow'
+import authorsRouter from './routers/authorRouter'
+import borrowsRouter from './routers/borrowRouter'
 
 config()
 const app = express()
@@ -26,6 +26,12 @@ app.use('/api/authors', authorsRouter)
 app.use('/api/borrows', borrowsRouter)
 
 app.use(apiErrorHandler)
+
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    message: 'route not found',
+  })
+})
 
 mongoose
   .connect(URL)

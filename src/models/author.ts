@@ -11,10 +11,10 @@ const authorSchema = new mongoose.Schema({
     required: true,
   },
 
-  books: {
-    type: [mongoose.Schema.Types.ObjectId],
-    // ref: 'Book',
-  },
+  //   books: {
+  //     type: [mongoose.Schema.Types.ObjectId],
+  //     // ref: 'Book',
+  //   },
 })
 
 export default mongoose.model<AuthorDocument>('Author', authorSchema)
