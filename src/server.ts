@@ -1,6 +1,5 @@
 import express, { Application } from 'express'
 import mongoose from 'mongoose'
-import { config } from 'dotenv'
 
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
@@ -9,7 +8,6 @@ import borrowsRouter from './routers/borrowRouter'
 import bookRouter from './routers/bookRoutes'
 import { dev } from './config'
 
-config()
 const app: Application = express()
 const PORT = dev.app.PORT
 const URL = dev.db.ATLAS_URL as string
@@ -19,8 +17,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 app.use('/api/authors', authorsRouter)
-app.use('/api/borrows', borrowsRouter)
-app.use('/api/authors', authorsRouter)
+app.use('/api/books', bookRouter)
 app.use('/api/borrows', borrowsRouter)
 
 app.use(apiErrorHandler)
