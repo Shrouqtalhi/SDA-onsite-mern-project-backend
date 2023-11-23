@@ -1,9 +1,18 @@
 import { Schema, model } from 'mongoose'
 
+export type BookDocument = {
+  image: string
+  title: string
+  description: string
+  authorId: Schema.Types.ObjectId[]
+  isAvailable: boolean
+  bookCopiesQty: Number
+}
+
 const bookSchema = new Schema({
   image: {
     type: String,
-    required: true,
+    // required: true,
     trim: true,
   },
   title: {
@@ -25,13 +34,13 @@ const bookSchema = new Schema({
     minlength: [3, 'Book description must be at least 3 characters long'],
   },
   authorId: {
-    type: Number,
-    required: true,
-    trim: true,
+    type: [Schema.Types.ObjectId],
+    ref: 'Author',
   },
   isAvailable: {
     type: Boolean,
     required: true,
+    default: true,
   },
   bookCopiesQty: {
     type: Number,
@@ -40,4 +49,4 @@ const bookSchema = new Schema({
   },
 })
 
-export const Book = model('Books', bookSchema)
+export const Book = model('Book', bookSchema)
