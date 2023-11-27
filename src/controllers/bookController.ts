@@ -1,18 +1,43 @@
 import { Request, Response } from 'express'
 import { NextFunction } from 'express-serve-static-core'
 import { Book, BookDocument } from '../models/book'
-import slugify from 'slugify'
+import Author from '../models/author'
+
 import ApiError from '../errors/ApiError'
+import { BookSchemaType } from '../zod/bookSchema'
+import { promise } from 'zod'
+
+type FilterByTitle = {
+  title?: string
+}
 
 // GET /api/books -> Get all books
 export const getAllBooks = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const book = await Book.find().populate('authorId')
+    const title = req.query.title
+    const filterByBookName: FilterByTitle = {}
+
+    const page = Number(req.query.page) || 1
+    const perPage = Number(req.query.perPage) || 10
+    const totalBooks = await Book.countDocuments()
+    const totalPage = Math.ceil(totalBooks / perPage)
+    if (title && typeof title === 'string') {
+      filterByBookName.title = title
+    }
+
+    const books = await Book.find(filterByBookName)
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .populate('authorsId')
+
     res.json({
+      totalPage,
+      totalBooks,
       message: 'Get All Books',
-      payload: book,
+      payload: books,
     })
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -34,45 +59,34 @@ export const getBookById = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-// GET /api/books/:slug -> Get books by slug -> npm i slugify
-// export const getBookBySlug = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     // const book = await Book.find({ slug: req.params.slug })
-//     // if (book.length === 0) {
-//     //   next(ApiError.badRequest(`book not found!`))
-//     // }
-//     // res.json({
-//     //   message: `Get book by slug`,
-//     //   payload: book.length === 1 ? book[0] : book,
-//     // })
-//   } catch (error) {
-//     next(error)
-//   }
-// }
-
 // PORT /api/books -> Create new book
 export const createNewBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Check book already exists or not
-    const { title, description, isAvailable, bookCopiesQty }: BookDocument = req.body
+    const { title, description, isAvailable, bookCopiesQty } =
+      // : BookDocument
+      req.body as BookSchemaType
     const isExist = await Book.exists({ title: title })
     if (isExist) {
       next(ApiError.badRequest(`book already exist with this title`))
+      return
     }
     const book = new Book({
-      title: title,
-      slug: slugify(title),
-      description: description,
-      isAvailable: isAvailable,
-      bookCopiesQty: bookCopiesQty,
+      title,
+      description,
+      isAvailable,
+      bookCopiesQty,
     })
+    console.log(book)
     await book.save()
 
     res.status(201).json({
       message: 'New book created',
+      payload: book,
     })
   } catch (error) {
     next(error)
+    return
   }
 }
 
@@ -83,6 +97,7 @@ export const deleteBook = async (req: Request, res: Response, next: NextFunction
     const book = await Book.findByIdAndDelete(id)
     if (!book) {
       next(ApiError.badRequest(`Book with id ${id} not found!`))
+      return
     }
     res.json({
       message: `Book with id ${id} has been deleted`,
@@ -93,23 +108,6 @@ export const deleteBook = async (req: Request, res: Response, next: NextFunction
   }
 }
 
-// DELETE /api/books -> delete a book
-// export const deleteBookBySlug = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const book = await Book.findByIdAndDelete({ slug: req.params.slug })
-//     console.log(book)
-//     if (!book) {
-//       next(ApiError.badRequest(`Book not found!`))
-//     }
-//     res.json({
-//       message: `Book has been deleted`,
-//       payload: book,
-//     })
-//   } catch (error) {
-//     next(error)
-//   }
-// }
-
 // PUT /api/books/:id -> Update a book
 export const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -118,12 +116,36 @@ export const updateBook = async (req: Request, res: Response, next: NextFunction
     const book = Book.findByIdAndUpdate(id, updatedBook, { new: true })
     if (!book) {
       next(ApiError.badRequest(`Book with id ${id} not found!`))
+      return
     }
     res.json({
       message: `Book with id ${id} has been updated`,
       payload: book,
     })
   } catch (error) {
+    next(error)
+  }
+}
+
+export const addAuthors = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { bookId, authorsId } = req.body
+    const book = await Book.findByIdAndUpdate(
+      { _id: bookId },
+      { authorsId: authorsId },
+      { new: true }
+    )
+    await Promise.all(
+      authorsId.map(
+        async (authorId: String) => await Author.updateOne({ _id: authorId }, { books: [bookId] })
+      )
+    )
+    res.json({
+      message: 'Add Author to books',
+      payload: book,
+    })
+  } catch (error) {
+    console.error(error)
     next(error)
   }
 }
