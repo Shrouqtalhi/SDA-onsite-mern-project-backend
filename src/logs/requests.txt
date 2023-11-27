@@ -493,3 +493,8 @@ Method: GET, Path: /api/books/type, Date: 11/25/2023, Time: 7:31:07 PM
 Method: GET, Path: /api/books/type, Date: 11/25/2023, Time: 7:31:08 PM
 Method: GET, Path: /api/books/type, Date: 11/25/2023, Time: 7:31:15 PM
 Method: GET, Path: /api/books/type, Date: 11/25/2023, Time: 7:31:17 PM
+Method: GET, Path: /api/books/6561faba540922957d0dc, Date: 11/27/2023, Time: 11:48:13 AM
+Method: GET, Path: /api/books/type, Date: 11/27/2023, Time: 11:49:22 AM
+Method: GET, Path: /api/books/type, Date: 11/27/2023, Time: 11:49:53 AM
+Method: POST, Path: /api/books, Date: 11/27/2023, Time: 2:02:41 PM
+Method: POST, Path: /api/books, Date: 11/27/2023, Time: 2:05:05 PM

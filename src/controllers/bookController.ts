@@ -5,7 +5,7 @@ import Author from '../models/author'
 
 import ApiError from '../errors/ApiError'
 import { BookSchemaType } from '../zod/bookSchema'
-import { promise } from 'zod'
+import mongoose from 'mongoose'
 
 type FilterByTitle = {
   title?: string
@@ -17,12 +17,15 @@ export const getAllBooks = async (req: Request, res: Response, next: NextFunctio
     const title = req.query.title
     const filterByBookName: FilterByTitle = {}
 
-    const page = Number(req.query.page) || 1
+    let page = Number(req.query.page) || 1
     const perPage = Number(req.query.perPage) || 10
     const totalBooks = await Book.countDocuments()
     const totalPage = Math.ceil(totalBooks / perPage)
     if (title && typeof title === 'string') {
       filterByBookName.title = title
+    }
+    if (page > totalPage) {
+      page = totalPage
     }
 
     const books = await Book.find(filterByBookName)
@@ -55,7 +58,12 @@ export const getBookById = async (req: Request, res: Response, next: NextFunctio
       payload: book,
     })
   } catch (error) {
-    next(error)
+    if (error instanceof mongoose.Error.CastError) {
+      const error = next(ApiError.badRequest(`Id formate is not valid!`))
+      next(error)
+    } else {
+      next(error)
+    }
   }
 }
 

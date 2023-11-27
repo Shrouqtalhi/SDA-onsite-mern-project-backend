@@ -9,19 +9,19 @@ export const bookSchema = z.object({
       })
       .min(2, 'Title must be more than 2 char'),
     description: z.string({
-      required_error: 'Discription is required !',
-      invalid_type_error: 'Discription must be string',
+      required_error: 'Description is required !',
+      invalid_type_error: 'Description must be string',
     }),
     isAvailable: z
       .number({
-        required_error: 'Discription is required !',
-        invalid_type_error: 'Discription must be string',
+        required_error: 'Availability is required !',
+        invalid_type_error: 'Availability must be number',
       })
       .min(0, 'Number should be more than zero'),
     bookCopiesQty: z
       .number({
-        required_error: 'Discription is required !',
-        invalid_type_error: 'Discription must be string',
+        required_error: 'Copy QTY is required !',
+        invalid_type_error: 'Copy QTY must be number',
       })
       .min(0, 'Number should be more than zero'),
   }),

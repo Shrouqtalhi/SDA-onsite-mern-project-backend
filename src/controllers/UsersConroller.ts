@@ -35,7 +35,7 @@ class UserController {
     const { firstName, lastName, email, password, role } = req.body
 
     try {
-      const newUser= new User({
+      const newUser = new User({
         firstName,
         lastName,
         email,
