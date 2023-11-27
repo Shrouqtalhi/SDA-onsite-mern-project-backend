@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { NextFunction } from 'express-serve-static-core'
 import { Book, BookDocument } from '../models/book'
-import slugify from 'slugify'
 import ApiError from '../errors/ApiError'
 
 // GET /api/books -> Get all books
@@ -61,7 +60,6 @@ export const createNewBook = async (req: Request, res: Response, next: NextFunct
     }
     const book = new Book({
       title: title,
-      slug: slugify(title),
       description: description,
       isAvailable: isAvailable,
       bookCopiesQty: bookCopiesQty,

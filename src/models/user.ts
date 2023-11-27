@@ -1,44 +1,43 @@
 import mongoose from 'mongoose'
+export type DecodedUser = {
+  userId: string
+  email: string
+  role: Role
+  iat: number
+  exp: number
+}
 
-// export type UserDocument = Document & {
-//   firstName: string
-//   lastName: string
-//   email: string
-//   password: string
-//   role: string
-// }
+
+
+function validateRole(role: string) {
+  if (role === 'USER' || role === 'ADMIN') {
+    return true
+  }
+  return false
+}
+
 const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-
-  lastName: {
-    type: String,
-    required: true,
-  },
-
   email: {
     type: String,
+    unique: true,
     required: true,
   },
-
   password: {
     type: String,
     required: true,
   },
-
-  role: {
-    enum:['Admin', 'Visitor'],
-    type: String,
-    required: true,
+  isActive: {
+    type: Boolean,
+    default: false,
   },
-  // relation between borrow and user should be many borrows to one user
-  // here's 1to1 just for the demo
-  borrow: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Borrow',
+  activationToken: {
+    type: String,
+  },
+  role: {
+    type: String,
+    default: 'USER',
+    validate: [validateRole, 'Role has to be either USER or ADMIN'],
   },
 })
-
-export default mongoose.model('User', userSchema)
+export type Role = 'USER' | 'ADMIN'
+export default mongoose.model('Client', userSchema)

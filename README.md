@@ -46,6 +46,3 @@ If you have a higher skill level and finish the previous requirements before the
 
 Happy coding!
 
-role:{
-enum: ['admin', 'visitor']
-}
