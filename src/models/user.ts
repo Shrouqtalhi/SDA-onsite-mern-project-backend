@@ -1,12 +1,12 @@
 import mongoose from 'mongoose'
 
-// export type UserDocument = Document & {
-//   firstName: string
-//   lastName: string
-//   email: string
-//   password: string
-//   role: string
-// }
+export type UserDocument = Document & {
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  role: string
+}
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   },
 
   role: {
-    enum:['Admin', 'Visitor'],
+    enum: ['Admin', 'Visitor'],
     type: String,
     required: true,
   },
@@ -41,4 +41,4 @@ const userSchema = new mongoose.Schema({
   },
 })
 
-export default mongoose.model('User', userSchema)
+export default mongoose.model<UserDocument>('User', userSchema)

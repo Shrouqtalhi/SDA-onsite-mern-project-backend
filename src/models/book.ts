@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 
-export type BookDocument = {
+export type BookDocument = Document & {
   image: string
   title: string
   description: string
@@ -18,7 +18,7 @@ const bookSchema = new Schema(
     },
     title: {
       type: String,
-      // required: true,
+      required: true,
       trim: true,
       minlength: [2, 'Book title must be at least 3 characters long'],
       maxlength: [300, 'Book title must be at most 300 characters long'],

@@ -9,6 +9,7 @@ import borrowsRouter from './routers/borrowRouter'
 import bookRouter from './routers/bookRoutes'
 import { connectDB } from './config/db'
 import morgan from 'morgan'
+import userRouter from './routers/userRouter'
 
 const app: Application = express()
 const PORT = dev.app.PORT
@@ -22,6 +23,7 @@ app.use(express.json())
 app.use('/api/authors', authorsRouter)
 app.use('/api/books', bookRouter)
 app.use('/api/borrows', borrowsRouter)
+app.use('/api/users', userRouter)
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({

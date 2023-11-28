@@ -74,18 +74,21 @@ export const createNewBook = async (req: Request, res: Response, next: NextFunct
     const { title, description, isAvailable, bookCopiesQty } =
       // : BookDocument
       req.body as BookSchemaType
+    console.log('req.body', req.file)
     const isExist = await Book.exists({ title: title })
     if (isExist) {
       next(ApiError.badRequest(`book already exist with this title`))
       return
     }
     const book = new Book({
+      image: req.file?.path,
       title,
       description,
       isAvailable,
       bookCopiesQty,
     })
     console.log(book)
+
     await book.save()
 
     res.status(201).json({

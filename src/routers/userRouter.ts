@@ -4,13 +4,13 @@ import ApiError from '../errors/ApiError'
 import user from '../models/user'
 const router = express.Router()
 
-import UserController from '../controllers/UsersConroller'
+import userController from '../controllers/usersController'
 
 // Define routes
-router.get('/users', UserController.getAllUsers);
-router.get('/users/:id', UserController.getUserById);
-router.post('/users', UserController.createUser);
-router.put('/users/:id', UserController.updateUser);
-router.delete('/users/:id', UserController.deleteUser);
+router.get('/', userController.getAllUsers)
+router.get('/:id', userController.getUserById)
+router.post('/', userController.createUser)
+router.put('/:id', userController.updateUser)
+router.delete('/:id', userController.deleteUser)
 
-export default router;
+export default router
