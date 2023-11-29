@@ -22,7 +22,7 @@ router.put('/authors', addAuthors)
 router.get('/:id', getBookById)
 
 // POST /api/books -> Create new book
-router.post('/', upload.single('image'), createNewBook)
+router.post('/', validate(bookSchema), upload.single('image'), createNewBook)
 
 // DELETE /api/books/:id -> Delete book by Id
 router.delete('/:id', deleteBook)

@@ -2,6 +2,10 @@ import { z, TypeOf } from 'zod'
 
 export const bookSchema = z.object({
   body: z.object({
+    image: z.string({
+      required_error: 'image is required !',
+      invalid_type_error: 'image must be a string',
+    }),
     title: z
       .string({
         required_error: 'Title is required !',
