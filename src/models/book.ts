@@ -1,52 +1,52 @@
 import { Schema, model } from 'mongoose'
 
-export type BookDocument = {
+export type BookDocument = Document & {
   image: string
   title: string
   description: string
-  authorId: Schema.Types.ObjectId[]
-  isAvailable: boolean
+  authorsId: Schema.Types.ObjectId[]
+  isAvailable: number
   bookCopiesQty: Number
 }
 
-const bookSchema = new Schema({
-  image: {
-    type: String,
-    // required: true,
-    trim: true,
+const bookSchema = new Schema(
+  {
+    image: {
+      type: String,
+      // required: true,
+      default: 'public/images/books/default.png',
+    },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: [2, 'Book title must be at least 3 characters long'],
+      maxlength: [300, 'Book title must be at most 300 characters long'],
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: [3, 'Book description must be at least 3 characters long'],
+    },
+    authorsId: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Author',
+    },
+    isAvailable: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    bookCopiesQty: {
+      type: Number,
+      // required: true,
+      trim: true,
+      default: 1,
+      min: 0,
+    },
   },
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: [3, 'Book title must be at least 3 characters long'],
-    maxlength: [300, 'Book title must be at most 300 characters long'],
-  },
-  slug: {
-    type: String,
-    unique: true,
-    lowercase: true,
-  },
-  description: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: [3, 'Book description must be at least 3 characters long'],
-  },
-  authorId: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Author',
-  },
-  isAvailable: {
-    type: Boolean,
-    required: true,
-    default: true,
-  },
-  bookCopiesQty: {
-    type: Number,
-    required: true,
-    trim: true,
-  },
-})
+  { timestamps: true }
+)
 
-export const Book = model('Book', bookSchema)
+export const Book = model<BookDocument>('Book', bookSchema)

@@ -8,7 +8,7 @@ import User from '../models/user'
 import { validateUser } from '../middlewares/validateUser'
 import { generateActivationToken, sendActivationEmail } from '../util/email'
 import { checkAuth } from '../middlewares/checkAuthor'
-import { DecodedUser } from '../models/user'
+import { UserDocument } from '../models/user'
 import { checkRole } from '../middlewares/checkRole'
 
 const router = express.Router()
@@ -65,16 +65,14 @@ router.get('/activateUser/:activationToken', async (req, res, next) => {
 
 router.post('/login', validateUser, async (req, res, next) => {
   const { email, password } = req.validatedUser
-  const user = await User.findOne({ email }) 
+  const user = await User.findOne({ email })
   // we moved this check to be after comparing to avoid timing attack
   if (!user || !user.isActive) {
-    
     next(ApiError.badRequest('Invalid email or account not activated'))
     return
   }
   const isPassValid = await bcrypt.compare(password, user.password)
   if (!isPassValid) {
-    
     next(ApiError.badRequest('Invalid email or password'))
     return
   }

@@ -23,7 +23,7 @@ app.use(express.json())
 app.use('/api/authors', authorsRouter)
 app.use('/api/books', bookRouter)
 app.use('/api/borrows', borrowsRouter)
-app.use('api/users', userRouter )
+app.use('/api/users', userRouter)
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({

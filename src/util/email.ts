@@ -25,5 +25,6 @@ export async function sendActivationEmail(userEmail: string, activationToken: st
   }
 
   const info = await transporter.sendMail(mailOptions)
+  console.log(info)
   return info
 }
