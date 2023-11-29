@@ -35,7 +35,7 @@ class UserController {
     const { firstName, lastName, email, password, role } = req.body
 
     try {
-      const newUser= new User({
+      const newUser = new User({
         firstName,
         lastName,
         email,
@@ -44,7 +44,10 @@ class UserController {
       })
 
       const savedUser = await newUser.save()
-      res.status(201).json(savedUser)
+      res.status(201).json({
+        msg: 'add new user',
+        payload: savedUser,
+      })
     } catch (error) {
       next(ApiError.internal('Internal Server Error'))
     }

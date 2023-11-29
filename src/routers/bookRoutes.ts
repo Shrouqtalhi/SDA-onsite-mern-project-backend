@@ -9,6 +9,7 @@ import {
 } from '../controllers/bookController'
 import validate from '../middlewares/validate'
 import { bookSchema } from '../zod/bookSchema'
+import { upload } from '../middlewares/uploadFile'
 
 const router = Router()
 
@@ -21,7 +22,7 @@ router.put('/authors', addAuthors)
 router.get('/:id', getBookById)
 
 // POST /api/books -> Create new book
-router.post('/', validate(bookSchema), createNewBook)
+router.post('/', upload.single('image'), createNewBook)
 
 // DELETE /api/books/:id -> Delete book by Id
 router.delete('/:id', deleteBook)

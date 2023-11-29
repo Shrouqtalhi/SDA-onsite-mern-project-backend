@@ -1,44 +1,61 @@
 import mongoose from 'mongoose'
-
-// export type UserDocument = Document & {
-//   firstName: string
-//   lastName: string
-//   email: string
-//   password: string
-//   role: string
-// }
+import bcrypt from 'bcrypt'
+export type UserDocument = Document & {
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  role: string
+  avatar: string
+  isBlocked: boolean
+  isActive: boolean
+  activationToken: string | undefined
+}
+function validateRole(role: string) {
+  if (role === 'USER' || role === 'ADMIN') {
+    return true
+  }
+  return false
+}
 const userSchema = new mongoose.Schema({
   firstName: {
-    type: String,
-    required: true,
-  },
-
+    type: String,  },
   lastName: {
     type: String,
-    required: true,
   },
-
   email: {
     type: String,
     required: true,
+    unique: true,
   },
-
   password: {
     type: String,
     required: true,
   },
-
   role: {
-    enum:['Admin', 'Visitor'],
     type: String,
-    required: true,
+    default: 'USER',
+    validate: [validateRole, 'Role has to be either USER or ADMIN'],
   },
-  // relation between borrow and user should be many borrows to one user
+  avatar: {
+    type: String,
+  },
+  isBlocked: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
+  activationToken: {
+    type: String,
+  },
+  // relation between order and user should be many orders to one user
   // here's 1to1 just for the demo
-  borrow: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Borrow',
+  order: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Order',
   },
 })
-
-export default mongoose.model('User', userSchema)
+export default mongoose.model<UserDocument>('User', userSchema)
