@@ -27,12 +27,11 @@ const borrowSchema = new mongoose.Schema({
   },
   returnDate: {
     type: Date,
-    default: () => Date.now(),
+    default: null,
     required: false,
   },
   dueDate: {
     type: Date,
-    default: () => Date.now(),
     required: true,
   },
 })

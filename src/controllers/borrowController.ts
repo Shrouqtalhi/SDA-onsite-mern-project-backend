@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
-import Borrow from '../models/borrow'
+import Borrow, { BorrowDocument } from '../models/borrow'
 import ApiError from '../errors/ApiError'
+import { BorrowSchemaType } from '../zod/borrowSchema'
+import { Book, BookDocument } from '../models/book'
+import User from '../models/user'
+import { date } from 'zod'
 
 export default class BorrowController {
   async getAllBorrows(req: Request, res: Response) {
@@ -9,15 +13,35 @@ export default class BorrowController {
   }
 
   async addBorrow(req: Request, res: Response, next: NextFunction) {
-    const newBorrow = req.body
+    const { userId, bookId, numberOfDays } = req.body as BorrowSchemaType
 
-    if (!newBorrow) {
-      next(ApiError.badRequest('body is required'))
+    const book = await Book.findById(bookId)
+    const user = await User.findById(userId)
+    if (!user || !book) {
+      next(ApiError.badRequest('Book ID or User ID not found'))
+      return
+    }
+    if (book.isAvailable === 0) {
+      next(ApiError.badRequest('book is not avalable'))
+      return
     }
 
-    // const borrow = new Borrow(newBorrow)
-    // await borrow.save()
-    const borrow = await Borrow.create(newBorrow)
+    const date = new Date()
+
+    const borrow = new Borrow({
+      userId: userId,
+      bookId: bookId,
+      borrowDate: date.getDate(),
+      returnDate: null,
+      dueDate: date.setDate(date.getDate() + numberOfDays),
+    })
+    await borrow.save()
+    // user.borrow.add(borrow)
+    book.isAvailable = book.isAvailable - 1
+    await Book.findByIdAndUpdate(bookId, book)
+    await User.findByIdAndUpdate(userId, user)
+
+    // const borrow = await Borrow.create(newBorrow)
 
     res.status(200).json({ message: 'new Borrow saved', payload: borrow })
   }
@@ -44,5 +68,29 @@ export default class BorrowController {
     }
 
     res.status(200).json({ message: 'borrow deleted', payload: borrow })
+  }
+
+  async ReturnBorrowedBook(req: Request, res: Response, next: NextFunction) {
+    const borrowId = req.params.id
+
+    const borrow = await Borrow.findById(borrowId)
+    if (!borrow) {
+      res.status(404).json({ message: 'borrow not found' })
+      next(ApiError.badRequest('borrow not found'))
+      return
+    }
+    const book = await Book.findById(borrow.bookId)
+    if (!book) {
+      res.status(404).json({ message: 'book not found' })
+      next(ApiError.badRequest('book not found'))
+      return
+    }
+    book.isAvailable = book.isAvailable + 1
+    await Book.findByIdAndUpdate(book.id, book)
+
+    borrow.returnDate = new Date()
+    await Borrow.findByIdAndUpdate(borrow.id, borrow)
+
+    res.status(200).json({ message: 'book Returned', payload: borrow })
   }
 }
