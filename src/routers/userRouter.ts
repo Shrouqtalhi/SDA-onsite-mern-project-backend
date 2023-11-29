@@ -65,17 +65,16 @@ router.get('/activateUser/:activationToken', async (req, res, next) => {
 
 router.post('/login', validateUser, async (req, res, next) => {
   const { email, password } = req.validatedUser
-  const user = await User.findOne({ email })
-
-  const isPassValid = await bcrypt.compare(password, user.password)
-
+  const user = await User.findOne({ email }) 
   // we moved this check to be after comparing to avoid timing attack
   if (!user || !user.isActive) {
+    
     next(ApiError.badRequest('Invalid email or account not activated'))
     return
   }
-
+  const isPassValid = await bcrypt.compare(password, user.password)
   if (!isPassValid) {
+    
     next(ApiError.badRequest('Invalid email or password'))
     return
   }
