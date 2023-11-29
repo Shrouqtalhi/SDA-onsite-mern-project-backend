@@ -1,6 +1,6 @@
-import { z } from 'zod'
+import { z, TypeOf } from 'zod'
 
-export const authorSchemam = z.object({
+export const authorSchema = z.object({
   body: z.object({
     name: z
       .string({
@@ -10,3 +10,5 @@ export const authorSchemam = z.object({
       .min(2, 'Title must be more than 2 char'),
   }),
 })
+
+export type AuthorSchemaType = TypeOf<typeof authorSchema>['body']
