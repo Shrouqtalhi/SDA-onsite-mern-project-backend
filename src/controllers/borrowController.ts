@@ -31,7 +31,7 @@ export default class BorrowController {
     const borrow = new Borrow({
       userId: userId,
       bookId: bookId,
-      borrowDate: date.getDate(),
+      borrowDate: date,
       returnDate: null,
       dueDate: date.setDate(date.getDate() + numberOfDays),
     })
