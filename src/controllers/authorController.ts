@@ -13,6 +13,7 @@ export default class authorController {
 
     if (!newAuthor) {
       next(ApiError.badRequest('body is required'))
+      return
     }
 
     // const author = new Author(newAuthor)
@@ -30,6 +31,7 @@ export default class authorController {
     if (!newAuthor) {
       res.status(404).json({ message: 'author not found' })
       next(ApiError.badRequest('author not found'))
+      return
     }
     res.status(200).json({ message: 'author updated', payload: author })
   }
@@ -41,8 +43,22 @@ export default class authorController {
     if (!author) {
       res.status(404).json({ message: 'author not found' })
       next(ApiError.badRequest('author not found'))
+      return
     }
 
     res.status(200).json({ message: 'author deleted', payload: author })
+  }
+
+  async getAuthorById(req: Request, res: Response, next: NextFunction) {
+    const authorId = req.params.id
+
+    const author = await Author.findById(authorId)
+    if (!author) {
+      res.status(404).json({ message: 'author not found' })
+      next(ApiError.badRequest('author not found'))
+      return
+    }
+
+    res.status(200).json({ message: `author with id ${authorId} found`, payload: author })
   }
 }
