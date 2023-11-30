@@ -10,6 +10,7 @@ export type UserDocument = Document & {
   isBlocked: boolean
   isActive: boolean
   activationToken: string | undefined
+  borrow: mongoose.Schema.Types.ObjectId[]
 }
 function validateRole(role: string) {
   if (role === 'USER' || role === 'ADMIN') {
@@ -19,7 +20,8 @@ function validateRole(role: string) {
 }
 const userSchema = new mongoose.Schema({
   firstName: {
-    type: String,  },
+    type: String,
+  },
   lastName: {
     type: String,
   },
@@ -53,9 +55,9 @@ const userSchema = new mongoose.Schema({
   },
   // relation between order and user should be many orders to one user
   // here's 1to1 just for the demo
-  order: {
+  borrow: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Order',
+    ref: 'Borrow',
   },
 })
 export default mongoose.model<UserDocument>('User', userSchema)

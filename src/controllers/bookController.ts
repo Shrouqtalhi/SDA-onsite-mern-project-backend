@@ -70,9 +70,9 @@ export const getBookById = async (req: Request, res: Response, next: NextFunctio
 // PORT /api/books -> Create new book
 export const createNewBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    
+    console.log('=======')
     // Check book already exists or not
-    const { title, description, isAvailable, bookCopiesQty } =
+    const { image, title, description, isAvailable, bookCopiesQty } =
       // : BookDocument
       req.body as BookSchemaType
     const isExist = await Book.exists({ title: title })
@@ -82,6 +82,7 @@ export const createNewBook = async (req: Request, res: Response, next: NextFunct
     }
     const book = new Book({
       // image: req.file?.path,
+      image,
       title,
       description,
       isAvailable,
@@ -96,6 +97,7 @@ export const createNewBook = async (req: Request, res: Response, next: NextFunct
       payload: book,
     })
   } catch (error) {
+    console.log(error)
     next(error)
     return
   }
@@ -124,7 +126,7 @@ export const updateBook = async (req: Request, res: Response, next: NextFunction
   try {
     const id = req.params.id
     const updatedBook: BookDocument = req.body
-    const book = Book.findByIdAndUpdate(id, updatedBook, { new: true })
+    const book = await Book.findByIdAndUpdate(id, updatedBook, { new: true })
     if (!book) {
       next(ApiError.badRequest(`Book with id ${id} not found!`))
       return
