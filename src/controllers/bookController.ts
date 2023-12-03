@@ -70,7 +70,6 @@ export const getBookById = async (req: Request, res: Response, next: NextFunctio
 // PORT /api/books -> Create new book
 export const createNewBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('=======')
     // Check book already exists or not
     const { image, title, description, isAvailable, bookCopiesQty } =
       // : BookDocument

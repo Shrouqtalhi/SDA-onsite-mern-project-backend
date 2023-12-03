@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npx tsc",
+    "vercel-build": "echo shrouq",
     "start": "node dist/server.js",
     "devv": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node src/server.ts\"",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",

@@ -6,7 +6,7 @@ class UserController {
   // GET /users
   static async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = await User.find()
+      const users = await User.find().select('-password')
       res.json(users)
     } catch (error) {
       next(ApiError.internal('Internal Server Error'))
