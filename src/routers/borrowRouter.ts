@@ -13,6 +13,6 @@ router.get('/', borrow.getAllBorrows)
 router.post('/', validate(borrowSchema), borrow.addBorrow)
 router.put('/:id', borrow.updateBorrow)
 router.delete('/:id', borrow.deleteBorrow)
-router.put('/:id', borrow.ReturnBorrowedBook)
+router.put('/return/:id', borrow.ReturnBorrowedBook)
 
 export default router

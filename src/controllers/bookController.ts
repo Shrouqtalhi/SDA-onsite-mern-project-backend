@@ -71,7 +71,7 @@ export const getBookById = async (req: Request, res: Response, next: NextFunctio
 export const createNewBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Check book already exists or not
-    const { title, description, isAvailable, bookCopiesQty } =
+    const { image, title, description, isAvailable, bookCopiesQty } =
       // : BookDocument
       req.body as BookSchemaType
     const isExist = await Book.exists({ title: title })
@@ -81,6 +81,7 @@ export const createNewBook = async (req: Request, res: Response, next: NextFunct
     }
     const book = new Book({
       // image: req.file?.path,
+      image,
       title,
       description,
       isAvailable,
@@ -95,6 +96,7 @@ export const createNewBook = async (req: Request, res: Response, next: NextFunct
       payload: book,
     })
   } catch (error) {
+    console.log(error)
     next(error)
     return
   }

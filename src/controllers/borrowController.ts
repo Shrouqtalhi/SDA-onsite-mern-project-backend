@@ -31,12 +31,12 @@ export default class BorrowController {
     const borrow = new Borrow({
       userId: userId,
       bookId: bookId,
-      borrowDate: date.getDate(),
+      borrowDate: date,
       returnDate: null,
       dueDate: date.setDate(date.getDate() + numberOfDays),
     })
     await borrow.save()
-    // user.borrow.add(borrow)
+    user.borrow.push(borrow._id)
     book.isAvailable = book.isAvailable - 1
     await Book.findByIdAndUpdate(bookId, book)
     await User.findByIdAndUpdate(userId, user)
