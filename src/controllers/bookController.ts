@@ -70,7 +70,6 @@ export const getBookById = async (req: Request, res: Response, next: NextFunctio
 // PORT /api/books -> Create new book
 export const createNewBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    
     // Check book already exists or not
     const { title, description, isAvailable, bookCopiesQty } =
       // : BookDocument
@@ -124,7 +123,7 @@ export const updateBook = async (req: Request, res: Response, next: NextFunction
   try {
     const id = req.params.id
     const updatedBook: BookDocument = req.body
-    const book = Book.findByIdAndUpdate(id, updatedBook, { new: true })
+    const book = await Book.findByIdAndUpdate(id, updatedBook, { new: true })
     if (!book) {
       next(ApiError.badRequest(`Book with id ${id} not found!`))
       return

@@ -37,3 +37,5 @@ app.listen(PORT, () => {
 })
 
 app.use(apiErrorHandler)
+
+export default app
