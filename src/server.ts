@@ -15,7 +15,7 @@ const app: Application = express()
 const PORT = dev.app.PORT
 // const URL = dev.db.ATLAS_URL as string
 
-app.use(myLogger)
+// app.use(myLogger)
 app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
