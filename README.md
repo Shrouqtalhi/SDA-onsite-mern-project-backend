@@ -2,7 +2,7 @@
 
 This repository contains a Node.js/Express.js application with RESTful API endpoints for a library or e-commerce application. The API allows you to interact with items in the library or products in the store.
 
-`This is a teamwork assignment where you will work as a team within your group`
+`This is a teamwork assignment where you will work as a team within your group`å
 
 ## How to work
 
@@ -45,4 +45,3 @@ If you have a higher skill level and finish the previous requirements before the
 `Please note that the bonus requirements and reviews are optional and can be completed if you have additional time and advanced skills.`
 
 Happy coding!
-
