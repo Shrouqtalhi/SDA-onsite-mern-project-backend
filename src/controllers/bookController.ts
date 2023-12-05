@@ -14,12 +14,15 @@ type FilterByTitle = {
 // GET /api/books -> Get all books
 export const getAllBooks = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log('got to the books')
     const title = req.query.title
     const filterByBookName: FilterByTitle = {}
 
     let page = Number(req.query.page) || 1
     const perPage = Number(req.query.perPage) || 10
+    console.log('Before')
     const totalBooks = await Book.countDocuments()
+    console.log('After')
     const totalPage = Math.ceil(totalBooks / perPage)
     if (title && typeof title === 'string') {
       filterByBookName.title = title
