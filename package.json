@@ -7,11 +7,8 @@
     "build": "npx tsc",
     "vercel-build": "echo shrouq",
     "start": "node dist/server.js",
-    "devv": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node src/server.ts\"",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "ts-watch": "tsc -w",
-    "dev-start": "nodemon dist/server.js"
+    "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node src/server.ts\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@types/multer": "^1.4.11",
