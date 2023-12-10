@@ -16,12 +16,10 @@ export const bookSchema = z.object({
       required_error: 'Description is required !',
       invalid_type_error: 'Description must be string',
     }),
-    isAvailable: z
-      .number({
-        required_error: 'Availability is required !',
-        invalid_type_error: 'Availability must be number',
-      })
-      .min(0, 'Number should be more than zero'),
+    isAvailable: z.boolean({
+      required_error: 'Availability is required !',
+      invalid_type_error: 'Availability must be number',
+    }),
     bookCopiesQty: z
       .number({
         required_error: 'Copy QTY is required !',

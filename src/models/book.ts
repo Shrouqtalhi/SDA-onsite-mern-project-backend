@@ -5,8 +5,9 @@ export type BookDocument = Document & {
   title: string
   description: string
   authorsId: Schema.Types.ObjectId[]
-  isAvailable: number
+  isAvailable: boolean
   bookCopiesQty: Number
+  price: Number
 }
 
 const bookSchema = new Schema(
@@ -29,14 +30,14 @@ const bookSchema = new Schema(
       trim: true,
       minlength: [3, 'Book description must be at least 3 characters long'],
     },
-    authorsId: {
+    authorId: {
       type: [Schema.Types.ObjectId],
       ref: 'Author',
     },
     isAvailable: {
-      type: Number,
+      type: Boolean,
       required: true,
-      min: 0,
+      default: true,
     },
     bookCopiesQty: {
       type: Number,
@@ -44,6 +45,10 @@ const bookSchema = new Schema(
       trim: true,
       default: 1,
       min: 0,
+    },
+    price: {
+      type: Number,
+      required: true,
     },
   },
   { timestamps: true }

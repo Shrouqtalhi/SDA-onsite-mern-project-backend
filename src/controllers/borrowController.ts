@@ -4,7 +4,7 @@ import ApiError from '../errors/ApiError'
 import { BorrowSchemaType } from '../zod/borrowSchema'
 import { Book, BookDocument } from '../models/book'
 import User from '../models/user'
-import { date } from 'zod'
+import { date as zodDate } from 'zod'
 
 export default class BorrowController {
   async getAllBorrows(req: Request, res: Response) {
@@ -21,23 +21,23 @@ export default class BorrowController {
       next(ApiError.badRequest('Book ID or User ID not found'))
       return
     }
-    if (book.isAvailable === 0) {
-      next(ApiError.badRequest('book is not avalable'))
+    if (!book.isAvailable) {
+      next(ApiError.badRequest('book is not available'))
       return
     }
 
-    const date = new Date()
+    const currentDate = new Date()
 
     const borrow = new Borrow({
       userId: userId,
       bookId: bookId,
-      borrowDate: date,
+      borrowDate: currentDate,
       returnDate: null,
-      dueDate: date.setDate(date.getDate() + numberOfDays),
+      dueDate: currentDate.setDate(currentDate.getDate() + numberOfDays),
     })
     await borrow.save()
     user.borrow.push(borrow._id)
-    book.isAvailable = book.isAvailable - 1
+    book.isAvailable = false
     await Book.findByIdAndUpdate(bookId, book)
     await User.findByIdAndUpdate(userId, user)
 
@@ -85,7 +85,7 @@ export default class BorrowController {
       next(ApiError.badRequest('book not found'))
       return
     }
-    book.isAvailable = book.isAvailable + 1
+    book.isAvailable = true
     await Book.findByIdAndUpdate(book.id, book)
 
     borrow.returnDate = new Date()
