@@ -5,16 +5,14 @@ import 'dotenv/config'
 
 import ApiError from '../errors/ApiError'
 import User from '../models/user'
-import { validateUser } from '../middlewares/validateUser'
+import { validateUser, validateUserLogin } from '../middlewares/validateUser'
 import { generateActivationToken, sendActivationEmail } from '../util/email'
 import { checkAuth } from '../middlewares/checkAuthor'
-import { UserDocument } from '../models/user'
-import { checkRole } from '../middlewares/checkRole'
 
 const router = express.Router()
 
 router.post('/register', validateUser, async (req, res, next) => {
-  const { email, password } = req.validatedUser
+  const { firstName, lastName, email, password } = req.validatedUser
 
   try {
     const userExists = await User.findOne({ email })
@@ -26,6 +24,8 @@ router.post('/register', validateUser, async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const newUser = new User({
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       activationToken,
@@ -63,8 +63,8 @@ router.get('/activateUser/:activationToken', async (req, res, next) => {
   })
 })
 
-router.post('/login', validateUser, async (req, res, next) => {
-  const { email, password } = req.validatedUser
+router.post('/login', validateUserLogin, async (req, res, next) => {
+  const { email, password } = req.validateUserLogin
   const user = await User.findOne({ email })
   // we moved this check to be after comparing to avoid timing attack
   if (!user || !user.isActive) {

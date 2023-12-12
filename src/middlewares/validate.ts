@@ -11,7 +11,6 @@ const validate = (schema: AnyZodObject) => (req: Request, res: Response, next: N
     })
     next()
   } catch (error) {
-    console.log('=======')
     const zodError = error
     if (zodError instanceof ZodError) {
       return next(ApiError.badRequestValidation(zodError.errors))
