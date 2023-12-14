@@ -89,21 +89,28 @@ router.post('/login', validateUserLogin, async (req, res, next) => {
       algorithm: 'HS256',
     }
   )
+  const userWithoutPass = await User.findOne({ email }).select('-password')
 
-  res.status(200).json({ msg: 'Login successful', token })
+  res.status(200).json({ msg: 'Login successfully', token, user: userWithoutPass })
 })
 
-router.delete('/:userId', checkAuth('ADMIN'), async (req, res) => {
-  console.log('👀 ', req.params.userId)
-  await User.deleteOne({ _id: req.params.userId })
-  res.send()
-})
+router.delete(
+  '/:userId',
+  /*checkAuth('ADMIN'),*/ async (req, res) => {
+    console.log('👀 ', req.params.userId)
+    await User.deleteOne({ _id: req.params.userId })
+    res.send()
+  }
+)
 
-router.get('/', checkAuth('USER'), async (req, res, next) => {
-  const users = await User.find()
-  res.json({
-    users,
-  })
-})
+router.get(
+  '/',
+  /*checkAuth('USER'),*/ async (req, res, next) => {
+    const users = await User.find()
+    res.json({
+      users,
+    })
+  }
+)
 
 export default router
