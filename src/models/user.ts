@@ -10,6 +10,7 @@ export type UserDocument = Document & {
   isBlocked: boolean
   isActive: boolean
   activationToken: string | undefined
+  forgotPasswordCode: string | undefined
   borrow: mongoose.Schema.Types.ObjectId[]
 }
 function validateRole(role: string) {
@@ -53,6 +54,9 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   activationToken: {
+    type: String,
+  },
+  forgotPasswordCode: {
     type: String,
   },
   // relation between order and user should be many orders to one user

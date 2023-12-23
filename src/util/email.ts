@@ -31,3 +31,19 @@ export async function sendActivationEmail(userEmail: string, activationToken: st
   console.log(info)
   return info
 }
+
+export async function sendForgotPasswordEmail(userEmail: string, forgotPasswordCode: string) {
+  const resetPassLink = `${process.env.MAILER_FORGOT_PASSWORD_DOMAIN}/reset-password/${forgotPasswordCode}`
+  console.log('resetPassLink:', resetPassLink)
+
+  const mailOptions = {
+    from: process.env.MAILER_USER,
+    to: userEmail,
+    subject: 'Forgot password',
+    html: `<p>Hello,</p> <p>Click <a href="${resetPassLink}">here</a> to reset your password</p>`,
+  }
+
+  const info = await transporter.sendMail(mailOptions)
+  console.log(info)
+  return info
+}

@@ -5,19 +5,29 @@ import 'dotenv/config'
 
 import ApiError from '../errors/ApiError'
 import User from '../models/user'
-import { validateUser, validateUserLogin } from '../middlewares/validateUser'
-import { generateActivationToken, sendActivationEmail } from '../util/email'
+import {
+  validateForgotPassword,
+  validateResetPassword,
+  validateUser,
+  validateUserLogin,
+} from '../middlewares/validateUser'
+import {
+  generateActivationToken,
+  sendActivationEmail,
+  sendForgotPasswordEmail,
+} from '../util/email'
 import { checkAuth } from '../middlewares/checkAuthor'
 
 const router = express.Router()
 
+// Register
 router.post('/register', validateUser, async (req, res, next) => {
   const { firstName, lastName, email, password } = req.validatedUser
 
   try {
     const userExists = await User.findOne({ email })
     if (userExists) {
-      return next(ApiError.badRequest('Email already registered'))
+      return next(ApiError.badRequest('Email Already Exists'))
     }
 
     const activationToken = generateActivationToken()
@@ -44,6 +54,55 @@ router.post('/register', validateUser, async (req, res, next) => {
   }
 })
 
+// Reset Password
+router.post('/reset-password', validateResetPassword, async (req, res) => {
+  const password = req.resetPassword.password
+  const forgotPasswordCode = req.resetPassword.forgotPasswordCode
+
+  console.log(password)
+  console.log(forgotPasswordCode)
+
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  const user = await User.findOne({ forgotPasswordCode })
+  if (!user) {
+    return res.json({ msg: 'Password did not reset' })
+  }
+
+  user.forgotPasswordCode = undefined
+  user.password = hashedPassword
+  await user.save()
+
+  res.json({
+    msg: 'Password is reset',
+  })
+})
+
+// Forgot Password
+router.post('/forgot-password', validateForgotPassword, async (req, res, next) => {
+  const { email } = req.forgotPassword
+
+  try {
+    const userExists = await User.findOne({ email })
+    if (!userExists || !userExists.isActive) {
+      return next(ApiError.badRequest('Email does not exists or your email is not activated !'))
+    }
+
+    const forgotPasswordCode = generateActivationToken()
+    await User.updateOne({ email }, { forgotPasswordCode })
+
+    await sendForgotPasswordEmail(email, forgotPasswordCode)
+
+    res.json({
+      msg: 'Check your email to reset your password!',
+    })
+  } catch (error) {
+    console.log('error:', error)
+    next(ApiError.badRequest('Something went wrong'))
+  }
+})
+
+// Activation Token
 router.get('/activateUser/:activationToken', async (req, res, next) => {
   const activationToken = req.params.activationToken
   const user = await User.findOne({ activationToken })
@@ -63,6 +122,7 @@ router.get('/activateUser/:activationToken', async (req, res, next) => {
   })
 })
 
+// Login
 router.post('/login', validateUserLogin, async (req, res, next) => {
   const { email, password } = req.validateUserLogin
   const user = await User.findOne({ email })
@@ -94,23 +154,42 @@ router.post('/login', validateUserLogin, async (req, res, next) => {
   res.status(200).json({ msg: 'Login successfully', token, user: userWithoutPass })
 })
 
+// Delete User
 router.delete(
   '/:userId',
   /*checkAuth('ADMIN'),*/ async (req, res) => {
     console.log('👀 ', req.params.userId)
     await User.deleteOne({ _id: req.params.userId })
-    res.send()
+    res.send({
+      msg: 'User has been deleted successfully',
+    })
   }
 )
 
+// Get All Users
 router.get(
   '/',
-  /*checkAuth('USER'),*/ async (req, res, next) => {
-    const users = await User.find()
+  /*checkAuth('ADMIN'),*/ async (req, res, next) => {
+    const users = await User.find().select(['-password', '-activationToken'])
     res.json({
       users,
     })
   }
 )
 
+// Grant Role
+router.put(
+  '/role',
+  /*checkAuth('ADMIN'),*/ async (req, res, next) => {
+    const userId = req.body.userId
+    const role = req.body.role
+    const user = await User.findOneAndUpdate({ _id: userId }, { role }, { new: true }).select([
+      '-password',
+      '-activationToken',
+    ])
+    res.json({
+      user,
+    })
+  }
+)
 export default router

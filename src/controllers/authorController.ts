@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import Author from '../models/author'
+import Author, { AuthorDocument } from '../models/author'
 import ApiError from '../errors/ApiError'
 
 export default class authorController {
@@ -9,16 +9,19 @@ export default class authorController {
   }
 
   async addAuthor(req: Request, res: Response, next: NextFunction) {
-    const newAuthor = req.body
+    const { name } = req.body as AuthorDocument
 
-    if (!newAuthor) {
-      next(ApiError.badRequest('body is required'))
+    if (!name) {
+      next(ApiError.badRequest('Author is required'))
       return
     }
 
-    // const author = new Author(newAuthor)
-    // await author.save()
-    const author = await Author.create(newAuthor)
+    const author = new Author({
+      name,
+    })
+
+    await author.save()
+    // const author = await Author.create(name)
 
     res.status(200).json({ message: 'new Author saved', payload: author })
   }

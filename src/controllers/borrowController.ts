@@ -4,7 +4,6 @@ import ApiError from '../errors/ApiError'
 import { BorrowSchemaType } from '../zod/borrowSchema'
 import { Book, BookDocument } from '../models/book'
 import User from '../models/user'
-import { date as zodDate } from 'zod'
 
 export default class BorrowController {
   async getAllBorrows(req: Request, res: Response) {

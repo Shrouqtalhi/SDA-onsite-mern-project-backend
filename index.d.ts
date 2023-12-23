@@ -10,6 +10,13 @@ declare namespace Express {
       email: string
       password: string
     }
+    forgotPassword: {
+      email: string
+    }
+    resetPassword: {
+      password: string
+      forgotPasswordCode: string
+    }
     decodedUser: {
       userId: string
       email: string

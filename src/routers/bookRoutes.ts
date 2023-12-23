@@ -18,7 +18,7 @@ router.put('/authors', book.addAuthors)
 router.get('/:id', book.getBookById)
 
 // POST /api/books -> Create new book
-router.post('/', upload.single('image'), validate(bookSchema), book.createNewBook)
+router.post('/', /*upload.single('image'), validate(bookSchema),*/ book.createNewBook)
 
 // DELETE /api/books/:id -> Delete book by Id
 router.delete('/:id', book.deleteBook)

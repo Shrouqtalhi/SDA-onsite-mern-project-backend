@@ -10,11 +10,12 @@ import mongoose from 'mongoose'
 type FilterByTitle = {
   title?: { $regex: RegExp }
   authorId?: string
-  sortByPrice?: 'asc' | 'desc'
+  // sortByPrice?: 'asc' | 'desc'
 }
-type SortOption = {
-  sortByPrice?: 'asc' | 'desc' | { price: number }
-}
+
+// type SortOptions = {
+//   sort?: 'asc' | 'desc' | { price: number }
+// }
 
 export default class bookController {
   // GET /api/books -> Get all books
@@ -22,10 +23,10 @@ export default class bookController {
     try {
       const title = req.query.title
       const author = req.query.author
-      const sortByPrice = req.query.sort
+      const sort = req.query.price
 
       const filters: FilterByTitle = {}
-      const sortOptions: SortOption = {}
+      let sortOptions = {}
 
       let page = Number(req.query.page) || 1
       const perPage = Number(req.query.perPage) || 10
@@ -39,25 +40,38 @@ export default class bookController {
       }
 
       // ! not completed
-      if (sortByPrice && typeof sortByPrice === 'string') {
-        if (sortByPrice === 'asc') {
-          sortOptions.sortByPrice = { price: 1 }
-        }
-        if (sortByPrice === 'desc') {
-          sortOptions.sortByPrice = { price: -1 }
+      if (sort) {
+        if (sort === 'price') {
+          const price = Number(req.query.price)
+          if (price === 1) {
+            sortOptions = { price: 1 }
+          }
+          if (price === -1) {
+            sortOptions = { price: -1 }
+          }
         }
       }
+      // if (sort && typeof sort === 'string') {
+      //   if (sort === 'asc') {
+      //     sortOptions.sort = { price: 1 }
+      //   }
+      //   if (sort === 'desc') {
+      //     sortOptions.sort = { price: -1 }
+      //   }
+      // }
+
       if (page > totalPage) {
         page = totalPage
       }
 
       const books = await Book.find(filters)
-        // .sort(sortOptions.sortByPrice)
-        // .skip((page - 1) * perPage)
+        // .sort(sortOptions)
+        .skip((page - 1) * perPage)
         .limit(perPage)
         .populate('authorId')
 
       res.json({
+        page,
         totalPage,
         totalBooks,
         message: 'Get All Books',
@@ -92,26 +106,32 @@ export default class bookController {
   // PORT /api/books -> Create new book
   async createNewBook(req: Request, res: Response, next: NextFunction) {
     try {
+      const { image, title, description, bookCopiesQty, price } = req.body as BookDocument
+      // : BookDocument
+      // req.body as BookSchemaType
+
+      if (!image || !title || !description || bookCopiesQty === undefined || price === undefined) {
+        next(
+          ApiError.badRequest(`Invalid request: All values should be provided and not be empty.`)
+        )
+        return
+      }
       // Check book already exists or not
-      const { image, title, description, isAvailable, bookCopiesQty, price } =
-        // : BookDocument
-        // req.body as BookSchemaType
-        req.body as BookDocument
       const isExist = await Book.exists({ title: title })
       if (isExist) {
         next(ApiError.badRequest(`book already exist with this title`))
         return
       }
+
       const book = new Book({
         // image: req.file?.path,
         image,
         title,
         description,
-        isAvailable,
+        // isAvailable,
         bookCopiesQty,
         price,
       })
-      console.log(book)
 
       await book.save()
 
@@ -160,6 +180,7 @@ export default class bookController {
       next(error)
     }
   }
+
   async addAuthors(req: Request, res: Response, next: NextFunction) {
     try {
       const { bookId, authorsId } = req.body
