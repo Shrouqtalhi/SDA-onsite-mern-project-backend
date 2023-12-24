@@ -17,8 +17,11 @@ import {
   sendForgotPasswordEmail,
 } from '../util/email'
 import { checkAuth } from '../middlewares/checkAuthor'
+import UserController from '../controllers/usersController'
 
 const router = express.Router()
+
+const user = new UserController()
 
 // Register
 router.post('/register', validateUser, async (req, res, next) => {
@@ -192,4 +195,6 @@ router.put(
     })
   }
 )
+
+router.put('/profile/:id', UserController.updateUserProfile)
 export default router

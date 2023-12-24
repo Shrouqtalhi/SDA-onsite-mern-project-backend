@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import User from '../models/user'
 import ApiError from '../errors/ApiError'
 
-class UserController {
+export class UserController {
   // GET /users
   static async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
@@ -64,6 +64,24 @@ class UserController {
         { firstName, lastName, email, password, role },
         { new: true }
       )
+
+      if (!user) {
+        return next(ApiError.badRequest('User not found'))
+      }
+
+      res.json(user)
+    } catch (error) {
+      next(ApiError.internal('Internal Server Error'))
+    }
+  }
+
+  // PUT update user profile /users/:id
+  static async updateUserProfile(req: Request, res: Response, next: NextFunction) {
+    const userId = req.params.id
+    const { firstName, lastName } = req.body
+
+    try {
+      const user = await User.findByIdAndUpdate(userId, { firstName, lastName }, { new: true })
 
       if (!user) {
         return next(ApiError.badRequest('User not found'))

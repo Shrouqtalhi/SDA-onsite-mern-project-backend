@@ -29,7 +29,7 @@ export default class bookController {
       let sortOptions = {}
 
       let page = Number(req.query.page) || 1
-      const perPage = Number(req.query.perPage) || 10
+      const perPage = Number(req.query.perPage) || 8
       const totalBooks = await Book.countDocuments()
       const totalPage = Math.ceil(totalBooks / perPage)
       if (title && typeof title === 'string') {
