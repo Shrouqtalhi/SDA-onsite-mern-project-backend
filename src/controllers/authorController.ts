@@ -1,11 +1,23 @@
 import { Request, Response, NextFunction } from 'express'
 import Author, { AuthorDocument } from '../models/author'
 import ApiError from '../errors/ApiError'
+import { Book } from '../models/book'
 
 export default class authorController {
-  async getAllAuthors(req: Request, res: Response) {
-    const authors = await Author.find().populate('books')
-    res.status(200).json(authors)
+  async getAllAuthors(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authors = await Author.find().populate('books')
+      const authorsWithBooks = await Book.populate(authors, {
+        path: 'books.authors',
+        model: 'Author',
+      })
+      console.log(authorsWithBooks)
+      res.status(200).json(authorsWithBooks)
+      // res.status(200).json(authors)
+    } catch (error) {
+      console.error('Error fetching authors:', error)
+      next(ApiError.internal('Internal server error'))
+    }
   }
 
   async addAuthor(req: Request, res: Response, next: NextFunction) {
@@ -21,7 +33,6 @@ export default class authorController {
     })
 
     await author.save()
-    // const author = await Author.create(name)
 
     res.status(200).json({ message: 'new Author saved', payload: author })
   }

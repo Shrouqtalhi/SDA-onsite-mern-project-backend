@@ -26,11 +26,12 @@ export default class BorrowController {
     }
 
     const currentDate = new Date()
+    currentDate.setHours(0, 0, 0, 0)
 
     const borrow = new Borrow({
       userId: userId,
       bookId: bookId,
-      borrowDate: currentDate,
+      borrowDate: currentDate.toLocaleDateString(),
       returnDate: null,
       dueDate: currentDate.setDate(currentDate.getDate() + numberOfDays),
     })
@@ -91,5 +92,12 @@ export default class BorrowController {
     await Borrow.findByIdAndUpdate(borrow.id, borrow)
 
     res.status(200).json({ message: 'book Returned', payload: borrow })
+  }
+
+  async getByUserId(req: Request, res: Response, next: NextFunction) {
+    const decodedUser = req.decodedUser
+    const borrows = await Borrow.find({ userId: decodedUser.userId }).populate('bookId')
+
+    res.json(borrows)
   }
 }

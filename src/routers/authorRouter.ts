@@ -10,8 +10,8 @@ import { authorSchema } from '../zod/authorSchema'
 const author = new authorController()
 
 router.get('/', author.getAllAuthors)
-router.post('/', /*validate(authorSchema),*/ author.addAuthor)
-router.put('/:id', author.updateAuthor)
+router.post('/', validate(authorSchema), author.addAuthor)
+router.put('/:id', validate(authorSchema), author.updateAuthor)
 router.delete('/:id', author.deleteAuthor)
 router.get('/:id', author.getAuthorById)
 

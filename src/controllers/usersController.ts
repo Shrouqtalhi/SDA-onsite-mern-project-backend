@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import User from '../models/user'
+import User, { UserDocument } from '../models/user'
 import ApiError from '../errors/ApiError'
 
 export class UserController {
@@ -75,13 +75,17 @@ export class UserController {
     }
   }
 
-  // PUT update user profile /users/:id
+  // PUT update user profile  api/users/profile/:id
   static async updateUserProfile(req: Request, res: Response, next: NextFunction) {
     const userId = req.params.id
-    const { firstName, lastName } = req.body
+    const { firstName, lastName } = req.body as UserDocument
 
     try {
-      const user = await User.findByIdAndUpdate(userId, { firstName, lastName }, { new: true })
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { firstName, lastName },
+        { new: true }
+      ).select('-password')
 
       if (!user) {
         return next(ApiError.badRequest('User not found'))
