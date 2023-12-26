@@ -20,7 +20,7 @@ app.use(cors())
 
 app.get('/', (req, res) => {
   res.json({
-    msg: 'Welcome',
+    msg: 'Welcome 1',
   })
 })
 
