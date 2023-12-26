@@ -12,44 +12,21 @@ type FilterByTitle = {
   authorId?: string
   sortByPrice?: 'asc' | 'desc'
 }
-
-type SortOptions = {
-  sort?: 'asc' | 'desc' | { title: FilterByTitle }
-}
-
 export default class bookController {
   // GET /api/books -> Get all books
   async getAllBooks(req: Request, res: Response, next: NextFunction) {
     try {
-      // const title = req.query.title
-      const search = req.query.search
-
-      const author = req.query.author
-      const sort = req.query.price
+      const title = req.query.title
 
       const filters: FilterByTitle = {}
-      // let sortOptions = {}
 
       let page = Number(req.query.page) || 1
       const perPage = Number(req.query.perPage) || 8
       const totalBooks = await Book.countDocuments()
       const totalPage = Math.ceil(totalBooks / perPage)
-      if (search && typeof search === 'string') {
-        filters.title = { $regex: new RegExp(search, 'i') }
+      if (title && typeof title === 'string') {
+        filters.title = { $regex: new RegExp(title, 'i') }
       }
-      // if (author && typeof author === 'string') {
-      //   filters.authorId = author
-      // }
-
-      // ! not completed
-      // if (sort && typeof sort === 'string') {
-      //   if (sort === 'asc') {
-      //     SortOptions.sort = { title: 1 }
-      //   }
-      //   if (sort === 'desc') {
-      //     SortOptions.sort = { title: -1 }
-      //   }
-      // }
 
       if (page > totalPage) {
         page = totalPage

@@ -21,17 +21,16 @@ export default class BorrowController {
       return
     }
     if (!book.isAvailable) {
-      next(ApiError.badRequest('book is not available'))
+      next(ApiError.badRequest('Book Is Not Available'))
       return
     }
 
     const currentDate = new Date()
-    currentDate.setHours(0, 0, 0, 0)
 
     const borrow = new Borrow({
       userId: userId,
       bookId: bookId,
-      borrowDate: currentDate.toLocaleDateString(),
+      borrowDate: currentDate,
       returnDate: null,
       dueDate: currentDate.setDate(currentDate.getDate() + numberOfDays),
     })
@@ -43,7 +42,7 @@ export default class BorrowController {
 
     // const borrow = await Borrow.create(newBorrow)
 
-    res.status(200).json({ message: 'new Borrow saved', payload: borrow })
+    res.status(200).json({ message: 'Book borrowed successfully!', payload: borrow })
   }
 
   async updateBorrow(req: Request, res: Response, next: NextFunction) {
@@ -91,7 +90,7 @@ export default class BorrowController {
     borrow.returnDate = new Date()
     await Borrow.findByIdAndUpdate(borrow.id, borrow)
 
-    res.status(200).json({ message: 'book Returned', payload: borrow })
+    res.status(200).json({ message: 'Book Returned Successfully', payload: borrow })
   }
 
   async getByUserId(req: Request, res: Response, next: NextFunction) {
